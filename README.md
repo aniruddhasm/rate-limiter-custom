@@ -60,6 +60,7 @@ If a client exceeds the allowed requests, they will receive:
 
 ```
 
-##License
+## License
 
-MIT
+[MIT](./LICENSE)
+
