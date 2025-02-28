@@ -1,17 +1,16 @@
-Rate Limiter for Express (TypeScript)
+# Rate Limiter for Express (TypeScript)
 
 A simple rate-limiter middleware for Express applications written in TypeScript. It helps prevent excessive requests from clients by limiting requests per IP within a specific time window.
 
-Installation
-
+## Installation
 
 ```
 npm install rate-limiter-custom
 ```
 
 
-Usage
-Basic Example
+## Usage
+## Basic Example
 
 ```
 import express, { Request, Response } from "express";
@@ -34,19 +33,25 @@ app.listen(3000, () => console.log("Server running on port 3000"));
 
 ```
 
-Options
-Option	Type	Description	Default
-windowMs	number	Time window in milliseconds	60000 (1 min)
-maxRequests	number	Maximum requests allowed per IP within the window	10
+## **Options**  
+
+| Option       | Type   | Description                                         | Default       |
+|-------------|--------|-----------------------------------------------------|--------------|
+| `windowMs`  | number | Time window in milliseconds                         | `60000` (1 min) |
+| `maxRequests` | number | Maximum requests allowed per IP within the window  | `10`         |
 
 
-How It Works
+
+
+## How It Works
+
 The middleware tracks incoming requests by IP address.
 If an IP exceeds the allowed number of requests within the time window, a 429 Too Many Requests response is sent.
 After the time window expires, the request count resets.
 
 
-Error Handling
+## Error Handling
+
 If a client exceeds the allowed requests, they will receive:
 ```
 {
@@ -54,5 +59,7 @@ If a client exceeds the allowed requests, they will receive:
 }
 
 ```
-License
+
+##License
+
 MIT
