@@ -11,6 +11,8 @@ export function rateLimiter(options: RateLimiterOptions) {
             return fixedWindowRateLimiter(options);
         case "token":
             return tokenBucketRateLimiter(options);
+        case "leaky":
+            return leakyBucketLimiter(options);  
         default:
             return slidingWindowRateLimiter(options);
     }

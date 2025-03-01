@@ -1,7 +1,9 @@
 # Rate Limiter for Express (TypeScript)
 
 A simple **rate-limiter middleware** for Express applications written in **TypeScript**.  
-It supports the **Sliding Window Algorithm**, **Fixed Window Algorithm**, and **Token Bucket Algorithm** for rate limiting.
+It supports the **Sliding Window Algorithm**, **Fixed Window Algorithm**, **Token Bucket Algorithm**, and **Leaky Bucket Algorithm** for rate limiting.
+
+
 
 ## Supported Algorithms
 
@@ -17,8 +19,11 @@ It supports the **Sliding Window Algorithm**, **Fixed Window Algorithm**, and **
   Uses a token-based system where requests consume tokens.  
   Tokens regenerate at a fixed rate, allowing for bursts of requests while preventing sustained high traffic.
 
-By default, the middleware uses the **Sliding Window Algorithm**, but you can switch to the **Fixed Window** or **Token Bucket Algorithm** by specifying it in the configuration.
+- **Leaky Bucket Algorithm**:  
+  Processes requests at a constant rate, preventing sudden surges in traffic.  
+  If requests arrive faster than they can be processed, excess requests are discarded, mimicking a "leaky bucket" effect.
 
+By default, the middleware uses the **Sliding Window Algorithm**, but you can switch to **Fixed Window**, **Token Bucket**, or **Leaky Bucket Algorithm** by specifying it in the configuration.
 
 
 
@@ -27,6 +32,7 @@ By default, the middleware uses the **Sliding Window Algorithm**, but you can sw
 ```
 npm install rate-limiter-custom
 ```
+
 
 
 ## Usage
@@ -56,7 +62,15 @@ const limiter = rateLimiter({
 //  windowMs: 60 * 1000, // 1 minute
 //  maxRequests: 10, // 10 requests per minute per IP
 //  algo: "token" // Optional parameter. If not passed the default is sliding window
-// tokensPerInterval: 5 // Mandatory parameter, if algo is token
+//  tokensPerInterval: 5 // Mandatory parameter, if algo is token
+// });
+
+// Leaky Bucket (with token refill)
+//  const limiter = rateLimiter({
+//  windowMs: 60 * 1000, // 1 minute
+//  maxRequests: 10, // 10 requests per minute per IP
+//  algo: "leaky" // Optional parameter. If not passed the default is sliding window
+//  leakRate: 2 // Process 2 requests Mandatory parameter, if algo is leaky
 // });
 
 
@@ -70,17 +84,18 @@ app.listen(3000, () => console.log("Server running on port 3000"));
 
 ```
 
+
+
 ## **Options**  
 
 | Option             | Type    | Description                                                     | Default         |
 |--------------------|---------|-----------------------------------------------------------------|-----------------|
 | `windowMs`        | number  | Time window in milliseconds                                     | `60000` (1 min) |
 | `maxRequests`     | number  | Maximum requests allowed per IP within the window              | `10`            |
-| `algo`            | string  | Rate-limiting algorithm to use: `"sliding"`, `"fixed"`, `"token"` | `"sliding"`    |
+| `algo`            | string  | Rate-limiting algorithm to use: `"sliding"`, `"fixed"`, `"token"`, `"leaky"` | `"sliding"`    |
 | `tokensPerInterval` | number | Number of tokens added per interval (only for Token Bucket)    | `maxRequests`   |
+| `leakRate`        | number  | Number of requests processed per second (only for Leaky Bucket) | `maxRequests / windowMs` |
 | `errorMessage`    | string  | Custom error message when rate limit is exceeded               | `"Too many requests, please try again later."` |
-
-
 
 
 
@@ -104,7 +119,13 @@ The middleware tracks incoming requests based on the selected rate-limiting algo
 - If the bucket is empty, requests are blocked with a `429 Too Many Requests` response.  
 - Suitable for APIs that need to handle sudden request bursts efficiently.  
 
-After the time window expires (or tokens are refilled), requests are allowed again based on the chosen algorithm.  
+### **4️⃣ Leaky Bucket Algorithm**  
+- Requests are added to a queue (bucket), which processes them at a fixed rate.  
+- If too many requests arrive too quickly, the bucket overflows, and excess requests are dropped (blocked with `429 Too Many Requests`).  
+- Ensures a steady flow of requests instead of handling them in bursts.  
+- Ideal for APIs that require smooth request distribution to prevent sudden spikes in traffic.  
+
+After the time window expires (or tokens are refilled, or requests are processed), new requests are allowed based on the chosen algorithm. 🚀
 
 
 
@@ -118,6 +139,7 @@ If a client exceeds the allowed requests, they will receive:
 
 ```
 You can customize the error message using the errorMessage option.
+
 
 
 ## License
