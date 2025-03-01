@@ -1,7 +1,7 @@
 {
   "name": "rate-limiter-custom",
   "description": "A fast, customizable, and efficient rate-limiting middleware for Express in TypeScript.",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "license": "MIT",
   "keywords": [
     "rate-limiter",
