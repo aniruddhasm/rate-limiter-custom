@@ -1,33 +1,17 @@
-import { Request, Response, NextFunction } from "express";
-
-interface RateLimiterOptions {
-    windowMs: number;
-    maxRequests: number;
-}
-
-const rateLimitMap = new Map<string, { count: number; startTime: number }>();
+import { RateLimiterOptions } from "./config";
+import { slidingWindowRateLimiter } from "./slidingWindow";
+import { fixedWindowRateLimiter } from "./fixedWindow";
+import { tokenBucketRateLimiter } from "./tokenBucket";
 
 export function rateLimiter(options: RateLimiterOptions) {
-    return (req: Request, res: Response, next: NextFunction) => {
-        const ip = req.ip ?? "unknown"; // Ensure IP is always a string
-        const currentTime = Date.now();
+    const algorithm = options.algo || "sliding"; // Default to sliding window
 
-        if (!rateLimitMap.has(ip)) {
-            rateLimitMap.set(ip, { count: 1, startTime: currentTime });
-            return next();
-        }
-
-        const userData = rateLimitMap.get(ip)!;
-        if (currentTime - userData.startTime > options.windowMs) {
-            rateLimitMap.set(ip, { count: 1, startTime: currentTime });
-            return next();
-        }
-
-        if (userData.count >= options.maxRequests) {
-            return res.status(429).json({ message: "Too many requests, please try again later." });
-        }
-
-        userData.count++;
-        next();
-    };
+    switch (algorithm) {
+        case "fixed":
+            return fixedWindowRateLimiter(options);
+        case "token":
+            return tokenBucketRateLimiter(options);
+        default:
+            return slidingWindowRateLimiter(options);
+    }
 }
