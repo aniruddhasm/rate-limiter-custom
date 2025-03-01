@@ -1,12 +1,24 @@
 # Rate Limiter for Express (TypeScript)
 
 A simple **rate-limiter middleware** for Express applications written in **TypeScript**.  
-It supports both the **Sliding Window Algorithm** and the **Fixed Window Algorithm** for rate limiting.
+It supports the **Sliding Window Algorithm**, **Fixed Window Algorithm**, and **Token Bucket Algorithm** for rate limiting.
 
-- The **Sliding Window Algorithm** efficiently tracks and limits requests per IP, ensuring a smooth distribution of allowed requests within a given time frame. Unlike the fixed window approach, it dynamically adjusts the request count, providing a more balanced rate-limiting mechanism.
-- The **Fixed Window Algorithm** enforces a strict request limit within a fixed time window, making it simple and predictable.
+## Supported Algorithms
 
-By default, the middleware uses the **Sliding Window Algorithm**, but you can switch to the **Fixed Window Algorithm** by specifying it in the configuration.
+- **Sliding Window Algorithm (Default)**:  
+  Efficiently tracks and limits requests per IP, ensuring a smooth distribution of allowed requests within a given time frame.  
+  Unlike the fixed window approach, it dynamically adjusts the request count, providing a more balanced rate-limiting mechanism.
+
+- **Fixed Window Algorithm**:  
+  Enforces a strict request limit within a fixed time window, making it simple and predictable.  
+  This method resets counters at the start of each window.
+
+- **Token Bucket Algorithm**:  
+  Uses a token-based system where requests consume tokens.  
+  Tokens regenerate at a fixed rate, allowing for bursts of requests while preventing sustained high traffic.
+
+By default, the middleware uses the **Sliding Window Algorithm**, but you can switch to the **Fixed Window** or **Token Bucket Algorithm** by specifying it in the configuration.
+
 
 
 
@@ -111,4 +123,11 @@ You can customize the error message using the errorMessage option.
 ## License
 
 [MIT](./LICENSE)
+
+## Keywords
+
+rate-limiter, rate limiting, express-middleware, typescript, api-limiter,  
+request-throttling, sliding window, fixed window, token bucket,  
+express rate limiter, ddos protection, middleware, throttling, nodejs, security
+
 
