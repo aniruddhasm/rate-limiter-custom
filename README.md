@@ -123,11 +123,3 @@ You can customize the error message using the errorMessage option.
 ## License
 
 [MIT](./LICENSE)
-
-## Keywords
-
-rate-limiter, rate limiting, express-middleware, typescript, api-limiter,  
-request-throttling, sliding window, fixed window, token bucket,  
-express rate limiter, ddos protection, middleware, throttling, nodejs, security
-
-
