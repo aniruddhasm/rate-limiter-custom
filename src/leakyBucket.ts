@@ -7,6 +7,7 @@ const leakyBuckets = new Map<string, { queue: number; lastProcessed: number }>()
 export function leakyBucketLimiter(options: RateLimiterOptions) {
     return (req: Request, res: Response, next: NextFunction) => {
         const ip = req.ip ?? "unknown"; // Ensure IP is always a string
+        const currentTime = Date.now();
 	    const leakRate = options.leakRate ?? 1; // Requests processed per second
 
 	    if (!leakyBuckets.has(ip)) {

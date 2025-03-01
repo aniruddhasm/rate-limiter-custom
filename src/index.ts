@@ -1,6 +1,7 @@
 import { RateLimiterOptions } from "./config";
 import { slidingWindowRateLimiter } from "./slidingWindow";
 import { fixedWindowRateLimiter } from "./fixedWindow";
+import { leakyBucketLimiter } from "./leakyBucket";
 import { tokenBucketRateLimiter } from "./tokenBucket";
 
 export function rateLimiter(options: RateLimiterOptions) {
